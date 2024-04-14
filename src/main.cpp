@@ -1,33 +1,28 @@
 #include <Arduino.h>
+#include "hardware.h"
 #include <Adafruit_NeoPixel.h>
 
-Adafruit_NeoPixel strip(10, A4, NEO_GRB + NEO_KHZ800);
+
+HARDWARE::Motor motor(A1, A0, A2);
+HARDWARE::Point_light p1_light(A3);
+
+void point_incriment()
+{
+    p1_light.incriment();
+    motor.advance(200*10);
+}
+
+HARDWARE::Button p1_button(A5, point_incriment);
+
 
 void setup()
 {
- strip.begin();
-  strip.show(); // Initialize all pixels to 'off'
+ 
 }
+
 
 void loop()
 {
-    strip.setBrightness(255);
-    for (int i = 0; i < 10; i++)
-    {
-        strip.setPixelColor(i, 255, 0, 0);
-        int ii = i - 1;
-        if (ii < 0) ii = 9;
-        strip.setPixelColor(ii, 0,0,0);
-        strip.show();
-        delay(50);
-    }
-    for (int i = 9; i >= 0; i--)
-    {
-        strip.setPixelColor(i, 255, 0, 0);
-        int ii = i + 1;
-        if (ii > 9) ii = 0;
-        strip.setPixelColor(ii, 0,0,0);
-        strip.show();
-        delay(50);
-    }
+    motor.loop();
+    p1_button.loop(true);
 }
